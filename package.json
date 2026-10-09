@@ -1,0 +1,17 @@
+{
+  "name": "mindpass-extension",
+  "version": "1.0.0",
+  "description": "MindPass - Deterministic password generator & manager Chrome extension using mental math patterns",
+  "main": "background.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "password-generator",
+    "mental-math",
+    "security"
+  ],
+  "author": "ProtoXen",
+  "license": "MIT"
+}

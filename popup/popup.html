@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MindPass Dashboard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-group">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9C5 11.38 6.19 13.47 8 14.74V17C8 17.55 8.45 18 9 18H15C15.55 18 16 17.55 16 17V14.74C17.81 13.47 19 11.38 19 9C19 5.13 15.87 2 12 2ZM9 21C9 21.55 9.45 22 10 22H14C14.55 22 15 21.55 15 21V20H9V21Z" fill="#818CF8"/>
+          <path d="M12 6V11M10 8H14" stroke="#1E1B4B" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <h1>MindPass</h1>
+      </div>
+      <span class="badge-tag">Pattern 2</span>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="settings-tab">Settings</button>
+      <button class="tab-btn" data-tab="trainer-tab">Mental Trainer 🧠</button>
+      <button class="tab-btn" data-tab="accounts-tab">Saved Accounts</button>
+    </nav>
+
+    <!-- Tab 1: Settings -->
+    <section id="settings-tab" class="tab-content active">
+      <div class="card">
+        <h3>Master Pattern Secret</h3>
+        <p class="subtitle">Your secret prefix & symbol combined with domain and username attributes.</p>
+
+        <div class="form-group">
+          <label for="secret-input">Master Secret Prefix</label>
+          <input type="text" id="secret-input" placeholder="e.g. Saj" maxlength="10">
+        </div>
+
+        <div class="form-group">
+          <label for="symbol-input">Master Symbol</label>
+          <input type="text" id="symbol-input" placeholder="e.g. !" maxlength="5">
+        </div>
+
+        <button id="save-settings-btn" class="btn btn-primary">Save Settings</button>
+        <span id="settings-saved-msg" class="status-msg hidden">Saved!</span>
+      </div>
+
+      <div class="card formula-card">
+        <h4>Pattern 2 Formula</h4>
+        <div class="formula-box">
+          <code>[Secret] + [Domain First UPPER] + [Domain Last lower] + [Email First] + [Email Last] + [Domain Length] + [Symbol]</code>
+        </div>
+        <p class="formula-example">Upwork Example: <code>Saj</code> + <code>U</code> + <code>k</code> + <code>n</code> + <code>d</code> + <code>6</code> + <code>!</code> = <strong>SajUknd6!</strong></p>
+      </div>
+    </section>
+
+    <!-- Tab 2: Mental Trainer -->
+    <section id="trainer-tab" class="tab-content">
+      <div class="card">
+        <h3>Mental Math Trainer 🧠</h3>
+        <p class="subtitle">Practice computing your password in your head!</p>
+
+        <div class="form-group">
+          <label for="trainer-url">Target URL / Domain</label>
+          <input type="text" id="trainer-url" value="https://www.upwork.com/">
+        </div>
+
+        <div class="form-group">
+          <label for="trainer-email">Email / Username</label>
+          <input type="text" id="trainer-email" value="nhsajolbd@gmail.com">
+        </div>
+
+        <div class="form-group">
+          <label for="trainer-guess">Your Guessed Password</label>
+          <input type="text" id="trainer-guess" placeholder="Type what you calculated in your head...">
+        </div>
+
+        <div class="btn-group">
+          <button id="trainer-check-btn" class="btn btn-primary">Check & Reveal</button>
+          <button id="trainer-copy-btn" class="btn btn-secondary">Copy Password</button>
+        </div>
+
+        <div id="trainer-result-box" class="result-box hidden">
+          <div id="trainer-match-banner" class="match-banner"></div>
+          <div class="breakdown-grid">
+            <div class="breakdown-item"><span class="lbl">Secret:</span> <strong id="bk-secret"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Domain 1st (UPPER):</span> <strong id="bk-df"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Domain Last (lower):</span> <strong id="bk-dl"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Email 1st:</span> <strong id="bk-ef"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Email Last:</span> <strong id="bk-el"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Domain Length:</span> <strong id="bk-len"></strong></div>
+            <div class="breakdown-item"><span class="lbl">Symbol:</span> <strong id="bk-sym"></strong></div>
+          </div>
+          <div class="final-pass-row">
+            <span>Generated Password:</span>
+            <code id="bk-final-pass"></code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Saved Accounts -->
+    <section id="accounts-tab" class="tab-content">
+      <div class="card">
+        <h3>Saved Domain Accounts</h3>
+        <p class="subtitle">Usernames remembered per domain. Zero passwords are saved.</p>
+
+        <div class="add-account-row">
+          <input type="text" id="add-domain-input" placeholder="Domain (e.g. upwork)">
+          <input type="text" id="add-email-input" placeholder="Email / Username">
+          <button id="add-account-btn" class="btn btn-primary">Add</button>
+        </div>
+
+        <div id="accounts-list-container" class="accounts-list">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../shared/pattern-generator.js"></script>
+  <script src="../shared/storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
