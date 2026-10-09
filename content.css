@@ -2,7 +2,7 @@
 
 .mindpass-badge {
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 999999;
@@ -18,6 +18,13 @@
   cursor: pointer;
   transition: all 0.15s ease-in-out;
   outline: none;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+/* Offset when a native or custom password reveal eye button is present */
+.mindpass-badge.mindpass-offset-eye {
+  right: 38px;
 }
 
 .mindpass-badge:hover {
@@ -29,7 +36,7 @@
 .mindpass-dropdown {
   position: absolute;
   z-index: 9999999;
-  width: 240px;
+  width: 250px;
   background: #1E293B;
   border: 1px solid #334155;
   border-radius: 10px;

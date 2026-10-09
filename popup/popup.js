@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Settings tab elements
   const secretInput = document.getElementById('secret-input');
+  const toggleSecretBtn = document.getElementById('toggle-secret-btn');
   const symbolInput = document.getElementById('symbol-input');
   const saveSettingsBtn = document.getElementById('save-settings-btn');
   const settingsSavedMsg = document.getElementById('settings-saved-msg');
@@ -57,6 +58,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await getSettings();
   secretInput.value = settings.secret || 'Saj';
   symbolInput.value = settings.symbol || '!';
+
+  // Toggle secret visibility
+  toggleSecretBtn.addEventListener('click', () => {
+    if (secretInput.type === 'password') {
+      secretInput.type = 'text';
+      toggleSecretBtn.innerText = '🙈';
+    } else {
+      secretInput.type = 'password';
+      toggleSecretBtn.innerText = '👁️';
+    }
+  });
 
   saveSettingsBtn.addEventListener('click', async () => {
     const secret = secretInput.value.trim() || 'Saj';

@@ -34,7 +34,10 @@
 
         <div class="form-group">
           <label for="secret-input">Master Secret Prefix</label>
-          <input type="text" id="secret-input" placeholder="e.g. Saj" maxlength="10">
+          <div class="input-with-toggle">
+            <input type="password" id="secret-input" placeholder="e.g. Saj" maxlength="10">
+            <button type="button" id="toggle-secret-btn" class="toggle-btn" title="Show / Hide Secret">👁️</button>
+          </div>
         </div>
 
         <div class="form-group">

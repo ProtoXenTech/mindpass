@@ -137,7 +137,38 @@ body {
   margin-bottom: 4px;
 }
 
-input[type="text"] {
+.input-with-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-toggle input {
+  padding-right: 36px !important;
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  color: var(--text-muted);
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+}
+
+.toggle-btn:hover {
+  opacity: 0.8;
+}
+
+input[type="text"],
+input[type="password"] {
   width: 100%;
   background: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -149,7 +180,8 @@ input[type="text"] {
   transition: border-color 0.15s ease;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   border-color: var(--accent-color);
 }
 
@@ -196,7 +228,6 @@ input[type="text"]:focus {
   font-size: 12px;
   color: var(--success-color);
   margin-left: 8px;
-
 }
 
 .hidden {
@@ -270,7 +301,6 @@ input[type="text"]:focus {
   padding: 8px;
   border-radius: 6px;
   margin-bottom: 10px;
-
 }
 
 .breakdown-item {
@@ -295,7 +325,6 @@ input[type="text"]:focus {
   font-size: 14px;
   font-weight: 700;
   color: #818CF8;
-
 }
 
 .add-account-row {
@@ -328,7 +357,6 @@ input[type="text"]:focus {
 .account-info {
   display: flex;
   flex-direction: column;
-
 }
 
 .account-domain {

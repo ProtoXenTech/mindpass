@@ -1,6 +1,7 @@
 /**
- * MindPass Content Script
+ * MindPass Content Script (Hardened)
  * Detects email/password fields, injects interactive MindPass badges & dropdown menus.
+ * Includes safeguards against flexbox layout distortion, eye-icon collisions, and SPA mutation lag.
  */
 
 (function () {
@@ -10,8 +11,10 @@
   let activeEmailField = null;
   let activePasswordField = null;
   let dropdownMenu = null;
+  let scanTimeout = null;
 
   const currentDomain = parseDomain(window.location.href).domainString;
+  const SESSION_KEY = `mindpass_last_email_${currentDomain}`;
 
   // SVG Icon for MindPass Badge
   const MINDPASS_ICON_SVG = `
@@ -21,17 +24,37 @@
     </svg>
   `;
 
+  // Debounced scan function to protect performance on dynamic SPAs
+  function requestScan() {
+    if (scanTimeout) clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(scanAndAttach, 200);
+  }
+
   // Scan & observe input fields
   function scanAndAttach() {
     const inputs = document.querySelectorAll('input:not([data-mindpass-attached])');
     inputs.forEach(input => {
+      // Ignore hidden or non-interactive fields
+      if (input.type === 'hidden' || input.style.display === 'none' || input.disabled || input.readOnly) {
+        return;
+      }
+
       const type = (input.getAttribute('type') || 'text').toLowerCase();
       const name = (input.getAttribute('name') || '').toLowerCase();
       const id = (input.getAttribute('id') || '').toLowerCase();
       const placeholder = (input.getAttribute('placeholder') || '').toLowerCase();
+      const autocomplete = (input.getAttribute('autocomplete') || '').toLowerCase();
 
       const isPassword = type === 'password';
-      const isEmail = type === 'email' || name.includes('email') || name.includes('user') || id.includes('email') || id.includes('user') || placeholder.includes('email') || placeholder.includes('username');
+      const isEmail = type === 'email' || 
+                      autocomplete.includes('username') || 
+                      autocomplete.includes('email') || 
+                      name.includes('email') || 
+                      name.includes('user') || 
+                      id.includes('email') || 
+                      id.includes('user') || 
+                      placeholder.includes('email') || 
+                      placeholder.includes('username');
 
       if (isPassword || isEmail) {
         attachBadge(input, isPassword ? 'password' : 'email');
@@ -39,12 +62,28 @@
     });
   }
 
-  // Attach floating badge inside field wrapper
+  // Attach floating badge without disrupting parent flexbox/grid layout
   function attachBadge(input, fieldType) {
     input.setAttribute('data-mindpass-attached', 'true');
 
-    if (fieldType === 'email') activeEmailField = input;
-    if (fieldType === 'password') activePasswordField = input;
+    if (fieldType === 'email') {
+      activeEmailField = input;
+      // Track entered email to session storage for multi-step logins
+      input.addEventListener('input', () => {
+        if (input.value.trim()) {
+          sessionStorage.setItem(SESSION_KEY, input.value.trim());
+        }
+      });
+      input.addEventListener('change', () => {
+        if (input.value.trim()) {
+          sessionStorage.setItem(SESSION_KEY, input.value.trim());
+        }
+      });
+    }
+
+    if (fieldType === 'password') {
+      activePasswordField = input;
+    }
 
     // Track last focused fields
     input.addEventListener('focus', () => {
@@ -52,19 +91,19 @@
       if (fieldType === 'password') activePasswordField = input;
     });
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'mindpass-badge-wrapper';
-    
-    // Position relative wrapper context
     const parent = input.parentNode;
     if (!parent) return;
 
-    // Insert wrapper trigger
+    // Detect if parent or siblings contain password eye toggle
+    const hasSiblingButton = !!parent.querySelector('button, [role="button"], .toggle-password, .eye');
+
     const badge = document.createElement('button');
     badge.type = 'button';
-    badge.className = `mindpass-badge mindpass-badge-${fieldType}`;
+    badge.className = `mindpass-badge mindpass-badge-${fieldType} ${hasSiblingButton && fieldType === 'password' ? 'mindpass-offset-eye' : ''}`;
     badge.innerHTML = MINDPASS_ICON_SVG;
-    badge.title = fieldType === 'password' ? 'Click to Autofill MindPass Password (Ctrl+Shift+P)' : 'Select Saved Username/Email';
+    badge.title = fieldType === 'password' 
+      ? 'Click to Autofill MindPass Password (Ctrl+Shift+P)' 
+      : 'Select Saved Username/Email';
 
     badge.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -77,47 +116,75 @@
       }
     });
 
-    // Position badge over input
-    if (getComputedStyle(parent).position === 'static') {
+    // Safeguard parent positioning for absolute child without breaking layout
+    const parentStyle = window.getComputedStyle(parent);
+    if (parentStyle.position === 'static') {
       parent.style.position = 'relative';
     }
+
     parent.appendChild(badge);
+  }
+
+  // Find the most appropriate email for the password field
+  async function resolveEmailForPassword(passwordInput) {
+    // 1. Check active focused email field
+    if (activeEmailField && activeEmailField.value.trim()) {
+      return activeEmailField.value.trim();
+    }
+
+    // 2. Check within the SAME form ancestor first (prevents wrong-form capture)
+    const form = passwordInput.closest('form');
+    if (form) {
+      const formEmailInput = form.querySelector('input[type="email"], input[autocomplete*="username"], input[name*="user"], input[name*="email"]');
+      if (formEmailInput && formEmailInput.value.trim()) {
+        return formEmailInput.value.trim();
+      }
+    }
+
+    // 3. Check document-wide email inputs
+    const pageEmailInput = document.querySelector('input[type="email"], input[name*="user"], input[name*="email"]');
+    if (pageEmailInput && pageEmailInput.value.trim()) {
+      return pageEmailInput.value.trim();
+    }
+
+    // 4. Check sessionStorage for multi-step login continuity (e.g. Google, Upwork, Microsoft)
+    const sessionEmail = sessionStorage.getItem(SESSION_KEY);
+    if (sessionEmail && sessionEmail.trim()) {
+      return sessionEmail.trim();
+    }
+
+    // 5. Check saved domain accounts: if only 1 account exists, use it automatically!
+    const savedAccounts = await getAccountsForDomain(currentDomain);
+    if (savedAccounts.length === 1) {
+      return savedAccounts[0];
+    }
+
+    // 6. Fallback prompt
+    return prompt('Enter your Username or Email for MindPass generation:');
   }
 
   // Handle password generation and autofill
   async function handlePasswordAutofill(passwordInput) {
-    // Determine email/username
-    let emailVal = '';
+    const emailVal = await resolveEmailForPassword(passwordInput);
+    if (!emailVal || !emailVal.trim()) return;
 
-    if (activeEmailField && activeEmailField.value.trim()) {
-      emailVal = activeEmailField.value.trim();
-    } else {
-      // Find any email or text input on the page with a value
-      const pageEmailInput = document.querySelector('input[type="email"], input[name*="user"], input[name*="email"]');
-      if (pageEmailInput && pageEmailInput.value.trim()) {
-        emailVal = pageEmailInput.value.trim();
-      }
-    }
-
-    if (!emailVal) {
-      emailVal = prompt('Enter your Username or Email for MindPass generation:');
-      if (!emailVal) return;
-    }
+    const cleanEmail = emailVal.trim();
+    sessionStorage.setItem(SESSION_KEY, cleanEmail);
 
     const settings = await getSettings();
     const generatedPass = generatePassword({
       urlOrHostname: window.location.href,
-      emailOrUser: emailVal,
+      emailOrUser: cleanEmail,
       secret: settings.secret,
       symbol: settings.symbol
     });
 
-    // Set password field value & trigger input events
+    // Set password field value & trigger reactive events
     setNativeInputValue(passwordInput, generatedPass);
-    showToast(`MindPass autofilled! (${emailVal})`);
+    showToast(`MindPass autofilled! (${cleanEmail})`);
 
-    // Save account for domain
-    await addAccountForDomain(currentDomain, emailVal);
+    // Save account for domain in sync storage
+    await addAccountForDomain(currentDomain, cleanEmail);
   }
 
   // Handle email dropdown menu
@@ -131,7 +198,7 @@
 
     const header = document.createElement('div');
     header.className = 'mindpass-dropdown-header';
-    header.innerText = `MindPass Saved Accounts (${currentDomain})`;
+    header.innerText = `MindPass Accounts (${currentDomain})`;
     dropdownMenu.appendChild(header);
 
     if (savedAccounts.length === 0) {
@@ -146,7 +213,9 @@
         item.innerHTML = `<span class="mindpass-email-text">👤 ${account}</span>`;
         item.addEventListener('click', () => {
           setNativeInputValue(emailInput, account);
+          sessionStorage.setItem(SESSION_KEY, account);
           closeDropdown();
+          
           // Focus password field if available
           const pagePasswordInput = document.querySelector('input[type="password"]');
           if (pagePasswordInput) pagePasswordInput.focus();
@@ -160,7 +229,7 @@
     // Position dropdown relative to badge
     const rect = badgeEl.getBoundingClientRect();
     dropdownMenu.style.top = `${window.scrollY + rect.bottom + 4}px`;
-    dropdownMenu.style.left = `${window.scrollX + rect.left - 180}px`;
+    dropdownMenu.style.left = `${Math.max(10, window.scrollX + rect.left - 180)}px`;
 
     setTimeout(() => {
       document.addEventListener('click', onOutsideClick);
@@ -181,7 +250,7 @@
     }
   }
 
-  // Fire input/change events for modern frontend frameworks (React, Vue, Angular)
+  // Fire input/change events for modern reactive frontend frameworks (React, Vue, Angular, Svelte)
   function setNativeInputValue(element, value) {
     const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
     const prototype = Object.getPrototypeOf(element);
@@ -211,7 +280,7 @@
     }, 2000);
   }
 
-  // Keyboard shortcut message handler
+  // Keyboard shortcut message handler (Ctrl+Shift+P / Cmd+Shift+P)
   chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'TRIGGER_AUTOFILL') {
       const activeEl = document.activeElement;
@@ -224,8 +293,8 @@
     }
   });
 
-  // Initial scan & MutationObserver for dynamic forms
-  scanAndAttach();
-  const observer = new MutationObserver(() => scanAndAttach());
+  // Initial scan & debounced MutationObserver
+  requestScan();
+  const observer = new MutationObserver(requestScan);
   observer.observe(document.body, { childList: true, subtree: true });
 })();
