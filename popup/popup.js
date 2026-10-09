@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 2. Load Settings
   const settings = await getSettings();
-  secretInput.value = settings.secret || 'Saj';
+  secretInput.value = settings.secret || 'Mnd';
   symbolInput.value = settings.symbol || '!';
 
   // Toggle secret visibility
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   saveSettingsBtn.addEventListener('click', async () => {
-    const secret = secretInput.value.trim() || 'Saj';
+    const secret = secretInput.value.trim() || 'Mnd';
     const symbol = symbolInput.value.trim() || '!';
 
     await saveSettings({ secret, symbol });
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const df = domainString.charAt(0).toUpperCase();
     const dl = domainString.charAt(domainString.length - 1).toLowerCase();
     const dLen = domainString.length;
-    const secret = currentSettings.secret || 'Saj';
+    const secret = currentSettings.secret || 'Mnd';
     const symbol = currentSettings.symbol || '!';
 
     const actualPass = generatePassword({

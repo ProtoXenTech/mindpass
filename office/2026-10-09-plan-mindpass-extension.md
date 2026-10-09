@@ -25,29 +25,29 @@ MindPass is a lightweight, zero-cloud Chrome Browser Extension (Manifest V3) tha
 ```
 
 ### Component Normalization Rules (Preventing Calculation Mismatches)
-| Component | Source | Normalization & Rule | Example (`upwork.com` + `Nhsajolbd@gmail.com`) |
+| Component | Source | Normalization & Rule | Example (`vaultflow.com` + `Alex.Dev@domain.com`) |
 | :--- | :--- | :--- | :--- |
-| **`Secret`** | Extension Settings | Master prefix string (default: `Saj`). Preserves set casing. | `Saj` |
-| **`Domain First`** | Parsed Domain String | 1st character converted to **UPPERCASE**. | `U` |
-| **`Domain Last`** | Parsed Domain String | Last character converted to **lowercase**. | `k` |
-| **`Email First`** | Username Part (before `@`) | 1st character converted to **lowercase** (prevents mobile/OS auto-cap bugs). | `n` |
-| **`Email Last`** | Username Part (before `@`) | Last character converted to **lowercase** before `@`. | `d` |
-| **`Domain Length`** | Length of clean domain string | String representation of domain string character count. | `6` (`upwork` has 6 chars) |
+| **`Secret`** | Extension Settings | Master prefix string (default: `Mnd`). Preserves set casing. | `Mnd` |
+| **`Domain First`** | Parsed Domain String | 1st character converted to **UPPERCASE**. | `V` |
+| **`Domain Last`** | Parsed Domain String | Last character converted to **lowercase**. | `w` |
+| **`Email First`** | Username Part (before `@`) | 1st character converted to **lowercase** (prevents mobile/OS auto-cap bugs). | `a` |
+| **`Email Last`** | Username Part (before `@`) | Last character converted to **lowercase** before `@`. | `v` |
+| **`Domain Length`** | Length of clean domain string | String representation of domain string character count. | `9` (`vaultflow` has 9 chars) |
 | **`Symbol`** | Extension Settings | Special character (default: `!`). | `!` |
 
-**Final Generated Password:** `SajUknd6!` (9 characters)
+**Final Generated Password:** `MndVwav9!` (9 characters)
 
 ### Subdomain Separation Matrix
 MindPass deliberately treats subdomains as distinct domains so credentials remain partitioned across separate services:
 
 | Full URL | Hostname | Clean Domain String | Calculation Elements | Generated Password |
 | :--- | :--- | :--- | :--- | :--- |
-| `https://www.upwork.com/login` | `www.upwork.com` | `upwork` | `Saj` + `U` + `k` + `n` + `d` + `6` + `!` | **`SajUknd6!`** |
-| `https://example.com/` | `example.com` | `example` | `Saj` + `E` + `e` + `n` + `d` + `7` + `!` | **`SajEend7!`** |
-| `https://app.example.com/` | `app.example.com` | `app.example` | `Saj` + `A` + `e` + `n` + `d` + `11` + `!` | **`SajAend11!`** |
-| `https://admin.portal.example.com/`| `admin.portal.example.com`| `admin.portal.example` | `Saj` + `A` + `e` + `n` + `d` + `20` + `!` | **`SajAend20!`** |
-| `https://motobyk.com.bd/` | `motobyk.com.bd` | `motobyk` | `Saj` + `M` + `k` + `n` + `d` + `7` + `!` | **`SajMknd7!`** |
-| `https://studio.design/` | `studio.design` | `studio` | `Saj` + `S` + `o` + `n` + `d` + `6` + `!` | **`SajSond6!`** |
+| `https://vaultflow.com/login` | `vaultflow.com` | `vaultflow` | `Mnd` + `V` + `w` + `a` + `v` + `9` + `!` | **`MndVwav9!`** |
+| `https://example.com/` | `example.com` | `example` | `Mnd` + `E` + `e` + `a` + `v` + `7` + `!` | **`MndEeav7!`** |
+| `https://app.example.com/` | `app.example.com` | `app.example` | `Mnd` + `A` + `e` + `a` + `v` + `11` + `!` | **`MndAeav11!`** |
+| `https://admin.portal.example.com/`| `admin.portal.example.com`| `admin.portal.example` | `Mnd` + `A` + `e` + `a` + `v` + `20` + `!` | **`MndAeav20!`** |
+| `https://cloudportal.com.bd/` | `cloudportal.com.bd` | `cloudportal` | `Mnd` + `C` + `l` + `a` + `v` + `11` + `!` | **`MndClav11!`** |
+| `https://studio.design/` | `studio.design` | `studio` | `Mnd` + `S` + `o` + `a` + `v` + `6` + `!` | **`MndSoav6!`** |
 
 ---
 
@@ -98,8 +98,8 @@ MindPass deliberately treats subdomains as distinct domains so credentials remai
 
 1. **Zero-Password Storage**:
    - The extension stores only:
-     - `masterSettings`: `{ secret: "Saj", symbol: "!", maskSecret: true }`
-     - `domainAccounts`: `{ "upwork": ["nhsajolbd@gmail.com"] }`
+     - `masterSettings`: `{ secret: "Mnd", symbol: "!", maskSecret: true }`
+     - `domainAccounts`: `{ "vaultflow": ["alex.dev@domain.com"] }`
    - No passwords, hashes, or encrypted password blobs are ever stored.
 2. **Master Secret Masking**:
    - The popup includes an eye toggle (Show/Hide) for the Master Secret input to prevent shoulder-surfing and accidental screen-share leaks.
@@ -113,7 +113,7 @@ MindPass deliberately treats subdomains as distinct domains so credentials remai
 ## 6. Project Architecture & File Map
 
 ```
-/home/sajol/Server/Tool/Extension/mindpass/
+mindpass/
 ├── manifest.json            # Manifest V3 configuration & permissions
 ├── shared/
 │   ├── pattern-generator.js # Core calculation logic, TLD engine & domain parser

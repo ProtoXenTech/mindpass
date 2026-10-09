@@ -94,12 +94,12 @@ function parseEmailUser(emailOrUser) {
  * @param {Object} options
  * @param {string} options.urlOrHostname - Target site URL or domain
  * @param {string} options.emailOrUser - User email or account username
- * @param {string} [options.secret='Saj'] - Master secret prefix
+ * @param {string} [options.secret='Mnd'] - Master secret prefix
  * @param {string} [options.symbol='!'] - Special character symbol
  * @returns {string} Generated password
  */
-function generatePassword({ urlOrHostname, emailOrUser, secret = 'Saj', symbol = '!' }) {
-  const masterSecret = (secret && secret.trim()) ? secret.trim() : 'Saj';
+function generatePassword({ urlOrHostname, emailOrUser, secret = 'Mnd', symbol = '!' }) {
+  const masterSecret = (secret && secret.trim()) ? secret.trim() : 'Mnd';
   const masterSymbol = (symbol && symbol.trim()) ? symbol.trim() : '!';
 
   const { domainString } = parseDomain(urlOrHostname);

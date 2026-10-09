@@ -16,11 +16,14 @@
   const currentDomain = parseDomain(window.location.href).domainString;
   const SESSION_KEY = `mindpass_last_email_${currentDomain}`;
 
-  // SVG Icon for MindPass Badge
+  // SVG Icon for MindPass Badge (Neural Keymark)
   const MINDPASS_ICON_SVG = `
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C8.13 2 5 5.13 5 9C5 11.38 6.19 13.47 8 14.74V17C8 17.55 8.45 18 9 18H15C15.55 18 16 17.55 16 17V14.74C17.81 13.47 19 11.38 19 9C19 5.13 15.87 2 12 2ZM9 21C9 21.55 9.45 22 10 22H14C14.55 22 15 21.55 15 21V20H9V21Z" fill="#6366F1"/>
-      <path d="M12 6V11M10 8H14" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="12" cy="8" r="4.5" stroke="#818CF8" stroke-width="2" fill="none"/>
+      <circle cx="12" cy="8" r="1.5" fill="#38BDF8"/>
+      <path d="M12 12.5V20" stroke="#818CF8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 16H15.5" stroke="#818CF8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M12 18.5H14.5" stroke="#818CF8" stroke-width="2" stroke-linecap="round"/>
     </svg>
   `;
 

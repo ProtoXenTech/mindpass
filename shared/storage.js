@@ -4,7 +4,7 @@
  */
 
 const DEFAULT_SETTINGS = {
-  secret: 'Saj',
+  secret: 'Mnd',
   symbol: '!',
   enableBadge: true,
   enableShortcut: true

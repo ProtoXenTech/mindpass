@@ -13,17 +13,17 @@ It allows you to compute your passwords in your head in seconds without storing 
 ```
 
 ### Examples
-- **Upwork** (`upwork.com`) + `nhsajolbd@gmail.com` (Secret: `Saj`, Symbol: `!`):
-  - Secret: `Saj`
-  - Domain Upper/Lower bookends: `U` + `k` (`upwork` = length 6)
-  - Username bookends: `n` + `d` (`nhsajolbd`)
-  - Domain Length: `6`
+- **VaultFlow** (`vaultflow.com`) + `alex.dev@domain.com` (Secret: `Mnd`, Symbol: `!`):
+  - Secret: `Mnd`
+  - Domain Upper/Lower bookends: `V` + `w` (`vaultflow` = length 9)
+  - Username bookends: `a` + `v` (`alex.dev`)
+  - Domain Length: `9`
   - Symbol: `!`
-  - ➡️ Password: **`SajUknd6!`** (9 characters)
+  - ➡️ Password: **`MndVwav9!`** (9 characters)
 
 - **Apex Domain vs Subdomain**:
-  - `example.com` ➡️ **`SajEend7!`**
-  - `app.example.com` ➡️ **`SajAend11!`** *(Separate, unique passwords!)*
+  - `example.com` ➡️ **`MndEeav7!`**
+  - `app.example.com` ➡️ **`MndAeav11!`** *(Separate, unique passwords!)*
 
 ---
 

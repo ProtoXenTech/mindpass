@@ -4,7 +4,7 @@ const { parseDomain, parseEmailUser, generatePassword } = require('../shared/pat
 
 test('parseDomain extracts domain strings correctly across standard and modern TLDs', () => {
   // Standard TLDs
-  assert.strictEqual(parseDomain('https://www.upwork.com/login').domainString, 'upwork');
+  assert.strictEqual(parseDomain('https://vaultflow.com/login').domainString, 'vaultflow');
   assert.strictEqual(parseDomain('https://example.com/').domainString, 'example');
 
   // Subdomains (isolated)
@@ -13,7 +13,7 @@ test('parseDomain extracts domain strings correctly across standard and modern T
 
   // Two-part ccTLDs (.co.uk, .com.bd, .gov.bd, etc.)
   assert.strictEqual(parseDomain('my-site.co.uk').domainString, 'my-site');
-  assert.strictEqual(parseDomain('https://motobyk.com.bd').domainString, 'motobyk');
+  assert.strictEqual(parseDomain('https://cloudportal.com.bd').domainString, 'cloudportal');
   assert.strictEqual(parseDomain('https://portal.service.gov.bd/form').domainString, 'portal.service');
 
   // Modern new gTLDs (.design, .solutions, .dev, .app, .cloud)
@@ -28,21 +28,21 @@ test('parseDomain extracts domain strings correctly across standard and modern T
 
 test('parseEmailUser normalizes casing and handles short or complex usernames', () => {
   // Standard email
-  assert.deepStrictEqual(parseEmailUser('nhsajolbd@gmail.com'), {
-    username: 'nhsajolbd',
-    firstChar: 'n',
-    lastChar: 'd'
+  assert.deepStrictEqual(parseEmailUser('alex.dev@domain.com'), {
+    username: 'alex.dev',
+    firstChar: 'a',
+    lastChar: 'v'
   });
 
-  // Capitalized email (e.g. mobile auto-cap "Nhsajolbd@gmail.com")
-  assert.deepStrictEqual(parseEmailUser('Nhsajolbd@gmail.com'), {
-    username: 'nhsajolbd',
-    firstChar: 'n',
-    lastChar: 'd'
+  // Capitalized email (e.g. mobile auto-cap "Alex.Dev@domain.com")
+  assert.deepStrictEqual(parseEmailUser('Alex.Dev@domain.com'), {
+    username: 'alex.dev',
+    firstChar: 'a',
+    lastChar: 'v'
   });
 
   // 1-character username
-  assert.deepStrictEqual(parseEmailUser('a@gmail.com'), {
+  assert.deepStrictEqual(parseEmailUser('a@domain.com'), {
     username: 'a',
     firstChar: 'a',
     lastChar: 'a'
@@ -58,62 +58,62 @@ test('parseEmailUser normalizes casing and handles short or complex usernames', 
 
 test('generatePassword creates identical password regardless of email casing', () => {
   const lower = generatePassword({
-    urlOrHostname: 'https://www.upwork.com/',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    urlOrHostname: 'https://vaultflow.com/',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
   });
 
   const upper = generatePassword({
-    urlOrHostname: 'https://www.upwork.com/',
-    emailOrUser: 'Nhsajolbd@gmail.com',
-    secret: 'Saj',
+    urlOrHostname: 'https://vaultflow.com/',
+    emailOrUser: 'Alex.Dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
   });
 
-  // Both MUST be SajUknd6!
-  assert.strictEqual(lower, 'SajUknd6!');
-  assert.strictEqual(upper, 'SajUknd6!');
+  // Both MUST be MndVwav9!
+  assert.strictEqual(lower, 'MndVwav9!');
+  assert.strictEqual(upper, 'MndVwav9!');
 });
 
 test('generatePassword handles subdomains and two-part ccTLDs deterministically', () => {
-  // Upwork
+  // VaultFlow
   assert.strictEqual(generatePassword({
-    urlOrHostname: 'https://www.upwork.com/',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    urlOrHostname: 'https://vaultflow.com/',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
-  }), 'SajUknd6!');
+  }), 'MndVwav9!');
 
   // Subdomain (app.example.com)
   assert.strictEqual(generatePassword({
     urlOrHostname: 'https://app.example.com/feed',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
-  }), 'SajAend11!');
+  }), 'MndAeav11!');
 
   // Apex domain (example.com)
   assert.strictEqual(generatePassword({
     urlOrHostname: 'https://example.com/',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
-  }), 'SajEend7!');
+  }), 'MndEeav7!');
 
-  // Bangladesh ccTLD (.com.bd)
+  // Two-part ccTLD (.com.bd)
   assert.strictEqual(generatePassword({
-    urlOrHostname: 'https://motobyk.com.bd',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    urlOrHostname: 'https://cloudportal.com.bd',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
-  }), 'SajMknd7!');
+  }), 'MndClav11!');
 
   // Modern TLD (.design)
   assert.strictEqual(generatePassword({
     urlOrHostname: 'https://studio.design',
-    emailOrUser: 'nhsajolbd@gmail.com',
-    secret: 'Saj',
+    emailOrUser: 'alex.dev@domain.com',
+    secret: 'Mnd',
     symbol: '!'
-  }), 'SajSond6!');
+  }), 'MndSoav6!');
 });
