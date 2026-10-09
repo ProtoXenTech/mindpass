@@ -323,10 +323,30 @@ input[type="password"]:focus {
   border-radius: 6px;
 }
 
+.final-pass-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .final-pass-row code {
   font-size: 14px;
   font-weight: 700;
   color: #818CF8;
+}
+
+.mini-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  outline: none;
+  transition: transform 0.15s ease;
+}
+
+.mini-btn:hover {
+  transform: scale(1.15);
 }
 
 .add-account-row {

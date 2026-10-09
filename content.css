@@ -1,17 +1,16 @@
-/* MindPass Injected Content Styles */
+/* MindPass Injected Content Styles (Modern Brand Design) */
 
-.mindpass-badge {
+/* General button reset for MindPass controls */
+.mindpass-badge,
+.mindpass-reveal-btn {
   position: absolute;
-  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 999999;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 6px;
-  padding: 4px;
-  width: 28px;
-  height: 28px;
+  padding: 0;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,30 +21,68 @@
   pointer-events: auto;
 }
 
-/* Offset when a native or custom password reveal eye button is present */
-.mindpass-badge.mindpass-offset-eye {
-  right: 38px;
+/* Badge (Neural Keymark) */
+.mindpass-badge {
+  right: 8px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.25);
 }
 
 .mindpass-badge:hover {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(99, 102, 241, 0.22);
   border-color: #6366F1;
   transform: translateY(-50%) scale(1.08);
 }
 
+/* Password Reveal Eye Toggle Button */
+.mindpass-reveal-btn {
+  right: 38px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.mindpass-reveal-btn:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: #818CF8;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.mindpass-reveal-btn svg {
+  transition: stroke 0.15s ease;
+}
+
+.mindpass-reveal-btn:hover svg {
+  stroke: #818CF8;
+}
+
+.mindpass-reveal-btn.revealed svg {
+  stroke: #6366F1;
+}
+
+/* Input padding compensation so text never types under the icons */
+input[type="password"][data-mindpass-attached] {
+  padding-right: 70px !important;
+}
+
+input:not([type="password"])[data-mindpass-attached] {
+  padding-right: 40px !important;
+}
+
+/* Dropdown / Action Card Menu */
 .mindpass-dropdown {
   position: absolute;
   z-index: 9999999;
-  width: 250px;
-  background: #1E293B;
+  width: 280px;
+  background: #131B2E;
   border: 1px solid #334155;
   border-radius: 10px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
   color: #F8FAFC;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
   font-size: 13px;
   overflow: hidden;
   animation: mindpassFadeIn 0.15s ease-out;
+  box-sizing: border-box;
 }
 
 @keyframes mindpassFadeIn {
@@ -54,16 +91,34 @@
 }
 
 .mindpass-dropdown-header {
-  background: #0F172A;
+  background: #090D16;
   padding: 8px 12px;
   font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #94A3B8;
+  color: #818CF8;
   border-bottom: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+.mindpass-dropdown-close {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.mindpass-dropdown-close:hover {
+  color: #F8FAFC;
+}
+
+/* Dropdown List Items */
 .mindpass-dropdown-item {
   padding: 10px 12px;
   cursor: pointer;
@@ -72,39 +127,163 @@
   justify-content: space-between;
   transition: background 0.12s ease;
   color: #E2E8F0;
+  font-size: 12px;
 }
 
 .mindpass-dropdown-item:hover {
-  background: #334155;
+  background: #1E293B;
   color: #FFFFFF;
 }
 
 .mindpass-dropdown-item.empty {
   color: #94A3B8;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
   cursor: default;
+  padding: 12px;
 }
 
 .mindpass-dropdown-item.empty:hover {
   background: transparent;
 }
 
+/* Password Action Card Layout */
+.mindpass-card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mindpass-account-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mindpass-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+
+.mindpass-account-display {
+  font-size: 12px;
+  color: #F8FAFC;
+  background: #090D16;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #1E293B;
+  word-break: break-all;
+}
+
+.mindpass-preview-box {
+  background: #090D16;
+  border: 1px solid #1E293B;
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.mindpass-preview-text {
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #38BDF8;
+  letter-spacing: 1px;
+}
+
+.mindpass-preview-text.masked {
+  letter-spacing: 3px;
+  color: #818CF8;
+}
+
+.mindpass-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mindpass-icon-btn {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  color: #94A3B8;
+  padding: 3px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mindpass-icon-btn:hover {
+  background: #334155;
+  color: #FFFFFF;
+  border-color: #818CF8;
+}
+
+.mindpass-action-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.mindpass-action-btn.primary {
+  background: #6366F1;
+  color: #FFFFFF;
+}
+
+.mindpass-action-btn.primary:hover {
+  background: #4F46E5;
+}
+
+.mindpass-action-btn.secondary {
+  background: #1E293B;
+  color: #CBD5E1;
+  border: 1px solid #334155;
+}
+
+.mindpass-action-btn.secondary:hover {
+  background: #334155;
+  color: #FFFFFF;
+}
+
+/* Toast Notification */
 .mindpass-toast {
   position: fixed;
   bottom: 24px;
   right: 24px;
   z-index: 99999999;
-  background: #0F172A;
+  background: #090D16;
   color: #F8FAFC;
   border: 1px solid #6366F1;
   border-radius: 8px;
-  padding: 12px 18px;
+  padding: 10px 16px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  transition: opacity 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .mindpass-toast.fade-out {

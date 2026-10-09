@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const bkLen = document.getElementById('bk-len');
   const bkSym = document.getElementById('bk-sym');
   const bkFinalPass = document.getElementById('bk-final-pass');
+  const trainerRevealBtn = document.getElementById('trainer-reveal-btn');
+  let currentTrainerPass = '';
+  let isTrainerPassMasked = false;
 
   // Accounts tab elements
   const addDomainInput = document.getElementById('add-domain-input');
@@ -109,7 +112,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     bkEl.innerText = el;
     bkLen.innerText = dLen.toString();
     bkSym.innerText = symbol;
+    currentTrainerPass = actualPass;
+    isTrainerPassMasked = false;
     bkFinalPass.innerText = actualPass;
+    if (trainerRevealBtn) trainerRevealBtn.innerText = '👁️';
 
     if (guessVal) {
       if (guessVal === actualPass) {
@@ -126,6 +132,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     trainerResultBox.classList.remove('hidden');
   });
+
+  if (trainerRevealBtn) {
+    trainerRevealBtn.addEventListener('click', () => {
+      if (!currentTrainerPass) return;
+      isTrainerPassMasked = !isTrainerPassMasked;
+      if (isTrainerPassMasked) {
+        bkFinalPass.innerText = '•'.repeat(currentTrainerPass.length);
+        trainerRevealBtn.innerText = '🙈';
+      } else {
+        bkFinalPass.innerText = currentTrainerPass;
+        trainerRevealBtn.innerText = '👁️';
+      }
+    });
+  }
 
   trainerCopyBtn.addEventListener('click', async () => {
     const currentSettings = await getSettings();
